@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace ProductsApp.Controllers
 {
     public class ProductsController : ApiController
     {
-        Product[] products = new Product[] {
+        private static List<Product> products = new List<Product>(new Product[] {
             new Product {Id = 1, Name = "Tomato Soup", Category = "Groceries", Price = 1},
             new Product {Id = 2, Name = "Yo-yo", Category = "Toys", Price = 3.75M},
             new Product {Id = 3, Name = "Hammer", Category = "Hardware", Price = 16.99M}
-        };
+        });
 
         public IEnumerable<Product> GetAllProducts()
         {
@@ -28,6 +29,20 @@ namespace ProductsApp.Controllers
             {
                 return NotFound();
             }
+            return Ok(product);
+        }
+
+        public IHttpActionResult DeleteProduct(int id)
+        {
+            Product product = products.FirstOrDefault(x => x.Id == id);
+            
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            products.Remove(product);
+
             return Ok(product);
         }
     }
